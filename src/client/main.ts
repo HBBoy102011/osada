@@ -42,12 +42,32 @@ async function boot(): Promise<void> {
   readRoomFromUrl();
 
   try {
-    const response = await fetch("/data/balance.json", { cache: "no-cache" });
-    if (!response.ok) throw new Error(String(response.status));
-    balance = (await response.json()) as Balance;
+    balance = await loadBalance();
   } catch {
     setConnection("Не удалось загрузить баланс. Обновите страницу.", "error");
   }
+}
+
+/**
+ * Бесплатные инстансы засыпают, поэтому первый запрос может не дойти.
+ * Делаем несколько попыток с нарастающей паузой, прежде чем сдаться.
+ */
+async function loadBalance(): Promise<Balance> {
+  let lastError: unknown = null;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const response = await fetch("/data/balance.json", { cache: "no-cache" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return (await response.json()) as Balance;
+    } catch (error) {
+      lastError = error;
+      if (attempt < 4) {
+        setConnection("Загружаем баланс…", "warn");
+        await new Promise((resolve) => setTimeout(resolve, attempt * 700));
+      }
+    }
+  }
+  throw lastError ?? new Error("баланс недоступен");
 }
 
 function wireMenu(): void {

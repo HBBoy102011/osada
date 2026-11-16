@@ -29,9 +29,12 @@ function runBots(seconds: number, dt = 0.1, seed = 424242): RunResult {
 
 describe("Bot: экономика и развитие", () => {
   it("добывает ресурсы, строит дома и обучает войска", () => {
-    const { world, seconds } = runBots(240);
+    // Бот детерминирован (seed карты), поэтому окно в 150 секунд стабильно:
+    // к этому моменту обе стороны успевают развиться, но матч ещё идёт.
+    const { world, seconds } = runBots(150);
 
-    expect(seconds).toBeGreaterThan(200);
+    expect(seconds).toBeGreaterThan(140);
+    expect(world.phase).toBe("playing");
 
     for (const team of [0, 1] as const) {
       const player = world.players[team];

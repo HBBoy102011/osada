@@ -1,20 +1,26 @@
 import type { BuildingKind, Team, UnitKind, Vec2 } from "./types.js";
 import type { World } from "./world.js";
+import { Rng } from "./rng.js";
 
 /**
  * Простой, но живой бот: пользуется теми же командами, что и человек,
  * поэтому в оффлайн-режиме нет отдельной «читерской» логики.
+ * Случайность бота идёт через собственный ГПСЧ с seed карты, чтобы
+ * матч можно было воспроизвести в тестах.
  */
 export class Bot {
   private thinkAt = 0;
   private lastAttackAt = -999;
   private lastDefendAt = -999;
   private lastBuild = new Map<string, number>();
+  private readonly rng: Rng;
 
   constructor(
     readonly world: World,
     readonly team: Team,
-  ) {}
+  ) {
+    this.rng = new Rng(world.map.seed ^ (team === 0 ? 0x51ed270b : 0x1d2f6c4d));
+  }
 
   update(dt: number): void {
     if (this.world.phase !== "playing") return;
@@ -235,7 +241,7 @@ export class Bot {
     for (const barracks of this.buildingsOfType("barracks")) {
       if (!barracks.done || barracks.queue.length >= 2) continue;
       if (supplyLeft < 2) break;
-      const wantRanged = player.tier >= 2 ? Math.random() < 0.4 : Math.random() < 0.3;
+      const wantRanged = player.tier >= 2 ? this.rng.chance(0.4) : this.rng.chance(0.3);
       const unit: UnitKind = wantRanged ? "archer" : "soldier";
       const def = world.balance.units[unit];
       if (player.gold >= def.cost.gold && player.wood >= def.cost.wood) {
