@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "match": {
+    "durationSeconds": 1200,
+    "startingGold": 320,
+    "startingWood": 280,
+    "baseSupply": 10,
+    "supplyCap": 100,
+    "defenderPassiveGoldPerSecond": 1.5,
+    "attackerTrophyGold": 75,
+    "heroRespawnSeconds": 45,
+    "baseRadius": 34,
+    "snapshotHz": 8,
+    "tickHz": 20
+  },
+  "units": {
+    "worker": {
+      "name": "Рабочий",
+      "cost": { "gold": 50, "wood": 0 },
+      "supply": 1,
+      "buildTime": 10,
+      "hp": 65,
+      "armor": 0,
+      "speed": 4.4,
+      "radius": 0.42,
+      "damage": 3,
+      "range": 1.2,
+      "cooldown": 1.2,
+      "vision": 9,
+      "gatherRate": 7,
+      "carry": 14,
+      "buildPower": 1,
+      "xp": 10,
+      "projectile": false
+    },
+    "soldier": {
+      "name": "Пехотинец",
+      "cost": { "gold": 55, "wood": 10 },
+      "supply": 1,
+      "buildTime": 14,
+      "hp": 125,
+      "armor": 2,
+      "speed": 4.7,
+      "radius": 0.46,
+      "damage": 11,
+      "range": 1.7,
+      "cooldown": 1.0,
+      "vision": 9,
+      "xp": 20,
+      "projectile": false
+    },
+    "archer": {
+      "name": "Лучник",
+      "cost": { "gold": 55, "wood": 25 },
+      "supply": 1,
+      "buildTime": 16,
+      "hp": 85,
+      "armor": 1,
+      "speed": 4.5,
+      "radius": 0.42,
+      "damage": 9,
+      "range": 7,
+      "cooldown": 1.35,
+      "vision": 11,
+      "xp": 22,
+      "projectile": true
+    },
+    "catapult": {
+      "name": "Катапульта",
+      "cost": { "gold": 140, "wood": 90 },
+      "supply": 3,
+      "buildTime": 28,
+      "hp": 240,
+      "armor": 1,
+      "speed": 3.1,
+      "radius": 0.8,
+      "damage": 42,
+      "range": 11,
+      "minRange": 3,
+      "cooldown": 3.2,
+      "vision": 12,
+      "buildingBonus": 2.5,
+      "xp": 45,
+      "projectile": true
+    },
+    "hero": {
+      "name": "Герой",
+      "cost": { "gold": 0, "wood": 0 },
+      "supply": 0,
+      "buildTime": 0,
+      "hp": 420,
+      "armor": 3,
+      "speed": 5.5,
+      "radius": 0.58,
+      "damage": 19,
+      "range": 1.9,
+      "cooldown": 0.8,
+      "vision": 12,
+      "xp": 0,
+      "projectile": false
+    }
+  },
+  "buildings": {
+    "hall": {
+      "name": "Главный зал",
+      "cost": { "gold": 0, "wood": 0 },
+      "hp": 2200,
+      "armor": 5,
+      "size": 4.2,
+      "buildTime": 0,
+      "supply": 10,
+      "vision": 14,
+      "dropOff": true,
+      "train": ["worker"]
+    },
+    "barracks": {
+      "name": "Казармы",
+      "cost": { "gold": 0, "wood": 150 },
+      "hp": 950,
+      "armor": 4,
+      "size": 3.6,
+      "buildTime": 25,
+      "supply": 0,
+      "vision": 10,
+      "train": ["soldier", "archer"]
+    },
+    "workshop": {
+      "name": "Мастерская",
+      "cost": { "gold": 120, "wood": 140 },
+      "hp": 820,
+      "armor": 3,
+      "size": 3.4,
+      "buildTime": 30,
+      "supply": 0,
+      "vision": 9,
+      "train": ["catapult"],
+      "requiresTier": 2
+    },
+    "tower": {
+      "name": "Башня",
+      "cost": { "gold": 90, "wood": 80 },
+      "hp": 720,
+      "armor": 6,
+      "size": 2.2,
+      "buildTime": 22,
+      "supply": 0,
+      "vision": 15,
+      "attack": { "damage": 15, "range": 10, "cooldown": 1.25 }
+    },
+    "house": {
+      "name": "Дом",
+      "cost": { "gold": 0, "wood": 55 },
+      "hp": 320,
+      "armor": 2,
+      "size": 2.1,
+      "buildTime": 12,
+      "supply": 10,
+      "vision": 8
+    },
+    "outpost": {
+      "name": "Форпост",
+      "cost": { "gold": 70, "wood": 60 },
+      "hp": 620,
+      "armor": 4,
+      "size": 2.6,
+      "buildTime": 24,
+      "supply": 0,
+      "vision": 14,
+      "dropOff": true,
+      "attackerOnly": true
+    },
+    "wall": {
+      "name": "Стена",
+      "cost": { "gold": 0, "wood": 14 },
+      "hp": 520,
+      "armor": 8,
+      "size": 2.0,
+      "buildTime": 8,
+      "supply": 0,
+      "vision": 4
+    },
+    "trophy": {
+      "name": "Трофей",
+      "cost": { "gold": 0, "wood": 0 },
+      "hp": 520,
+      "armor": 2,
+      "size": 2.6,
+      "buildTime": 0,
+      "supply": 0,
+      "vision": 9,
+      "neutralOnly": true
+    }
+  },
+  "tiers": {
+    "2": { "cost": { "gold": 200, "wood": 150 }, "buildTime": 40 },
+    "3": { "cost": { "gold": 350, "wood": 250 }, "buildTime": 55 }
+  },
+  "techs": {
+    "armor": {
+      "name": "Кузница: броня",
+      "levels": [
+        { "cost": { "gold": 110, "wood": 70 }, "bonus": 1 },
+        { "cost": { "gold": 170, "wood": 110 }, "bonus": 2 },
+        { "cost": { "gold": 240, "wood": 160 }, "bonus": 3 }
+      ]
+    },
+    "damage": {
+      "name": "Кузница: урон",
+      "levels": [
+        { "cost": { "gold": 110, "wood": 70 }, "bonus": 1 },
+        { "cost": { "gold": 170, "wood": 110 }, "bonus": 2 },
+        { "cost": { "gold": 240, "wood": 160 }, "bonus": 3 }
+      ]
+    },
+    "gather": {
+      "name": "Инструменты: добыча",
+      "levels": [
+        { "cost": { "gold": 90, "wood": 60 }, "bonus": 0.15 },
+        { "cost": { "gold": 150, "wood": 100 }, "bonus": 0.3 }
+      ]
+    }
+  },
+  "hero": {
+    "levelXpBase": 110,
+    "levelXpStep": 40,
+    "maxLevel": 8,
+    "hpPerLevel": 45,
+    "damagePerLevel": 3,
+    "armorPerLevel": 0.5,
+    "skills": [
+      {
+        "id": "cleave",
+        "name": "Рассекающий удар",
+        "type": "passive",
+        "description": "Атаки героя задевают врагов рядом с целью.",
+        "levels": [
+          { "splash": 0.25 },
+          { "splash": 0.4 },
+          { "splash": 0.55 }
+        ]
+      },
+      {
+        "id": "rally",
+        "name": "Боевой клич",
+        "type": "passive",
+        "description": "Аура: союзники рядом наносят больше урона.",
+        "levels": [
+          { "bonus": 0.06, "radius": 8 },
+          { "bonus": 0.11, "radius": 9 },
+          { "bonus": 0.16, "radius": 10 }
+        ]
+      },
+      {
+        "id": "mend",
+        "name": "Исцеление",
+        "type": "active",
+        "cooldown": 18,
+        "description": "Восстанавливает здоровье герою и союзникам рядом.",
+        "levels": [
+          { "heal": 90, "radius": 6 },
+          { "heal": 150, "radius": 7 },
+          { "heal": 220, "radius": 8 }
+        ]
+      },
+      {
+        "id": "charge",
+        "name": "Рывок",
+        "type": "active",
+        "cooldown": 22,
+        "duration": 4,
+        "description": "Герой ускоряется и наносит больше урона.",
+        "levels": [
+          { "speed": 0.35, "damage": 0.2 },
+          { "speed": 0.5, "damage": 0.3 },
+          { "speed": 0.7, "damage": 0.45 }
+        ]
+      }
+    ]
+  }
+}

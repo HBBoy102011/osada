@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Осада — асимметричный PvP-режим: защитник против атакующего. Экономика, осада, герой и трофеи."
+    />
+    <meta name="theme-color" content="#0b1419" />
+    <title>Осада — PvP: защитник против атакующего</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b1419'/%3E%3Cpath d='M10 46V26l12-8 12 8v20M34 46V26l12-8 8 6v22' fill='none' stroke='%23e0b463' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- ============================== МЕНЮ ============================== -->
+    <div id="menu" class="screen menu-screen">
+      <div class="menu-sky"></div>
+      <div class="menu-ridge"></div>
+      <div class="menu-vignette"></div>
+
+      <main class="menu-card">
+        <header class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round">
+              <path d="M8 48V26l12-8 12 8v22" />
+              <path d="M32 48V26l12-8 8 6v24" />
+              <path d="M4 54h56" />
+              <path d="M20 20v-6l4 2 4-2v6" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>ОСАДА</h1>
+            <p>Асимметричный PvP: защитник против атакующего</p>
+          </div>
+          <span class="brand-badge">MVP · веб</span>
+        </header>
+
+        <nav class="tabs" role="tablist">
+          <button class="tab is-active" data-tab="offline" role="tab">Против бота</button>
+          <button class="tab" data-tab="online" role="tab">Онлайн 1×1</button>
+        </nav>
+
+        <!-- Оффлайн -->
+        <section class="tab-panel" id="panel-offline" role="tabpanel">
+          <label class="field">
+            <span>Ваше имя</span>
+            <input id="offline-name" maxlength="18" autocomplete="nickname" placeholder="Полководец" />
+          </label>
+
+          <fieldset class="roles">
+            <legend>Сторона</legend>
+            <button class="role-card" data-role="defender" type="button">
+              <span class="role-icon blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+                  <path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </span>
+              <span class="role-body">
+                <b>Защитник</b>
+                <small>Главный зал, башни, пассивное золото. Выстоять 20 минут.</small>
+              </span>
+            </button>
+            <button class="role-card" data-role="attacker" type="button">
+              <span class="role-icon red" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+                  <path d="M14 3l7 7-4 4-7-7z" />
+                  <path d="M10 10l-6 6v4h4l6-6" />
+                </svg>
+              </span>
+              <span class="role-body">
+                <b>Атакующий</b>
+                <small>Лагерь, форпост, трофеи. Сокрушить зал до таймера.</small>
+              </span>
+            </button>
+            <button class="role-card is-selected" data-role="random" type="button">
+              <span class="role-icon gold" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+                  <path d="M4 7h5l3 5-3 5H4z" />
+                  <path d="M15 7h5v10h-5l-3-5z" />
+                </svg>
+              </span>
+              <span class="role-body">
+                <b>Случайно</b>
+                <small>Сторона определится при старте матча.</small>
+              </span>
+            </button>
+          </fieldset>
+
+          <button id="btn-play-offline" class="btn primary big" type="button">
+            <span>Начать матч против бота</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
+          </button>
+          <p class="fineprint">Матч идёт в браузере: тот же симулятор и тот же бот, что на сервере.</p>
+        </section>
+
+        <!-- Онлайн -->
+        <section class="tab-panel hidden" id="panel-online" role="tabpanel">
+          <label class="field">
+            <span>Ваше имя</span>
+            <input id="online-name" maxlength="18" autocomplete="nickname" placeholder="Полководец" />
+          </label>
+
+          <div class="online-grid">
+            <button id="btn-create" class="btn primary" type="button">Создать комнату</button>
+            <div class="join-row">
+              <input id="join-code" maxlength="4" placeholder="КОД" autocapitalize="characters" spellcheck="false" />
+              <button id="btn-join" class="btn" type="button">Войти</button>
+            </div>
+          </div>
+
+          <div id="connection" class="connection hidden">
+            <span class="dot"></span>
+            <span id="connection-text">Подключение…</span>
+            <button id="btn-retry" class="btn tiny hidden" type="button">Повторить</button>
+          </div>
+
+          <div id="lobby" class="lobby hidden">
+            <div class="lobby-top">
+              <div>Код комнаты <b id="lobby-code">····</b></div>
+              <button id="btn-copy" class="btn tiny" type="button">Скопировать ссылку</button>
+            </div>
+            <ul id="lobby-players" class="lobby-players"></ul>
+            <div id="lobby-status" class="lobby-status">Ожидание соперника…</div>
+            <button id="btn-leave" class="btn tiny danger" type="button">Покинуть комнату</button>
+          </div>
+
+          <button id="btn-resume" class="btn ghost hidden" type="button">Вернуться в текущий матч</button>
+          <p class="fineprint">
+            Авторитетный сервер, 20 Гц тик, туман войны по командам, переподключение в течение 60 секунд.
+          </p>
+        </section>
+
+        <footer class="menu-foot">
+          <button id="btn-howto" class="link" type="button">Как играть</button>
+          <span class="sep">·</span>
+          <a class="link" href="/api/health" target="_blank" rel="noreferrer">Статус сервера</a>
+          <span class="menu-foot-spacer"></span>
+          <span class="build">v0.1.0</span>
+        </footer>
+      </main>
+
+      <aside class="menu-side" aria-hidden="true">
+        <div class="side-card">
+          <h3>20 минут</h3>
+          <p>Защитник побеждает, если главный зал стоит на момент конца таймера.</p>
+        </div>
+        <div class="side-card">
+          <h3>3 трофея</h3>
+          <p>Атакующий получает золото за трофеи, защитник — дерево за их уничтожение.</p>
+        </div>
+        <div class="side-card">
+          <h3>Герой и войска</h3>
+          <p>Навыки, аура, лечение и рывок. Пехота, лучники и катапульты.</p>
+        </div>
+      </aside>
+
+      <div id="howto" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="howto-title">
+        <div class="modal-card howto-card">
+          <button class="modal-close" id="btn-howto-close" type="button" aria-label="Закрыть">×</button>
+          <h2 id="howto-title">Как играть</h2>
+          <div class="howto-grid">
+            <div>
+              <h3>Управление</h3>
+              <ul class="keys">
+                <li><kbd>ЛКМ</kbd> выбрать, <kbd>Shift</kbd> + ЛКМ добавить</li>
+                <li><kbd>ПКМ</kbd> приказ: движение, атака, добыча, ремонт</li>
+                <li><kbd>W A S D</kbd> / стрелки — камера, <kbd>колесо</kbd> — зум</li>
+                <li><kbd>A</kbd> атака по площади, <kbd>S</kbd> стоп, <kbd>F</kbd> герой</li>
+                <li><kbd>Q</kbd> / <kbd>W</kbd> способности героя, <kbd>Enter</kbd> чат</li>
+                <li><kbd>Ctrl</kbd>+<kbd>1…9</kbd> группы, <kbd>1…9</kbd> выбор группы</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Экономика</h3>
+              <ul class="keys">
+                <li>Рабочие добывают золото и дерево, носят в зал или форпост.</li>
+                <li>Дома повышают предел снабжения, казармы дают пехоту и лучников.</li>
+                <li>Мастерская открывается со 2-го уровня базы и строит катапульты.</li>
+                <li>Технологии: урон, броня, скорость добычи. Улучшение базы открывает войска.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Осада</h3>
+              <ul class="keys">
+                <li>Атакующий: снесите главный зал защитника до конца таймера.</li>
+                <li>Защитник: продержитесь 20 минут или уничтожьте лагерь врага.</li>
+                <li>Трофеи в центре карты дают золото атакующему и дерево защитнику.</li>
+                <li>Герой возрождается через 45 секунд, опыт даёт очки навыков.</li>
+              </ul>
+            </div>
+          </div>
+          <button id="btn-howto-ok" class="btn primary" type="button">Понятно</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== ИГРА ============================== -->
+    <div id="game" class="screen game-screen hidden">
+      <canvas id="game-canvas"></canvas>
+      <div id="game-layer" class="game-layer">
+        <header class="topbar">
+          <div class="res-group">
+            <span class="res"><i class="res-icon gold"></i><b id="res-gold">0</b></span>
+            <span class="res"><i class="res-icon wood"></i><b id="res-wood">0</b></span>
+            <span class="res"><i class="res-icon supply"></i><b id="res-supply">0/0</b></span>
+          </div>
+          <div class="match-info">
+            <div id="players-line" class="players-line"></div>
+            <div id="you-line" class="you-line"></div>
+          </div>
+          <div class="top-right">
+            <div id="timer" class="timer">20:00</div>
+            <span id="ping" class="ping">—</span>
+            <button id="btn-surrender" class="btn tiny danger ghost" type="button">Сдаться</button>
+          </div>
+        </header>
+
+        <aside class="panel selection-panel">
+          <div id="selection-head" class="panel-head">Ничего не выбрано</div>
+          <div id="selection-body" class="panel-body"></div>
+        </aside>
+
+        <aside class="panel hero-panel">
+          <div class="hero-head">
+            <span class="hero-portrait" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 18h16l-1-9-4 4-3-6-3 6-4-4z" /></svg>
+            </span>
+            <div class="hero-title">
+              <b id="hero-name">Герой</b>
+              <span class="hero-level">ур. <b id="hero-level">1</b></span>
+            </div>
+          </div>
+          <div class="xp"><i id="hero-xp" style="width: 0%"></i></div>
+          <div id="hero-xp-label" class="xp-label">0 / 0 опыта</div>
+          <div id="hero-dead" class="hero-dead hidden"></div>
+          <div id="hero-skills" class="hero-skills"></div>
+          <div class="tech-head">Развитие</div>
+          <div id="tech-grid" class="tech-grid"></div>
+        </aside>
+
+        <div class="bottom-dock">
+          <aside class="panel command-panel">
+            <div id="command-grid" class="command-grid"></div>
+          </aside>
+          <div class="minimap-wrap">
+            <canvas id="minimap" width="224" height="146"></canvas>
+            <div class="minimap-hint">ЛКМ — камера · ПКМ — приказ</div>
+          </div>
+        </div>
+
+        <div id="log-list" class="log-list"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" maxlength="160" placeholder="Сообщение… (Enter)" autocomplete="off" />
+        </form>
+
+        <div id="toast" class="toast hidden"></div>
+        <div id="place-hint" class="place-hint hidden"></div>
+
+        <div id="confirm" class="modal hidden" role="dialog" aria-modal="true">
+          <div class="modal-card small">
+            <h2>Сдаться?</h2>
+            <p>Матч завершится поражением. В онлайн-игре это засчитывается сразу.</p>
+            <div class="modal-actions">
+              <button id="confirm-no" class="btn" type="button">Продолжить бой</button>
+              <button id="confirm-yes" class="btn danger" type="button">Сдаться</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="end-screen" class="end-screen hidden" role="dialog" aria-modal="true">
+          <div class="end-card">
+            <div id="end-eyebrow" class="end-eyebrow">Осада завершена</div>
+            <h2 id="end-title">Победа</h2>
+            <p id="end-reason" class="end-reason"></p>
+            <div id="end-stats" class="end-stats"></div>
+            <div class="end-actions">
+              <button id="btn-end-again" class="btn primary" type="button">Ещё матч</button>
+              <button id="btn-end-menu" class="btn" type="button">В меню</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="game-loading" class="game-loading">
+          <span class="spinner"></span>
+          <span>Загрузка поля…</span>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <div class="noscript">Для игры нужен JavaScript.</div>
+    </noscript>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Установка зависимостей
+        run: npm ci
+
+      - name: Проверка типов
+        run: npm run typecheck
+
+      - name: Тесты
+        run: npm test
+
+      - name: Сборка
+        run: npm run build
+
+      - name: Smoke-тест сервера
+        run: |
+          node dist/server/server/index.js &
+          SERVER_PID=$!
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/api/health; then
+              break
+            fi
+            sleep 0.5
+          done
+          kill "$SERVER_PID"

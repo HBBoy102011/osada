@@ -1,0 +1,46 @@
+{
+  "name": "osada",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Осада — PvP RTS prototype (Three.js + TypeScript, authoritative server)",
+  "license": "MIT",
+  "author": "HBBoy102011",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HBBoy102011/osada.git"
+  },
+  "homepage": "https://osada.onrender.com",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n client,server -c cyan,magenta \"vite\" \"tsx watch src/server/index.ts\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch src/server/index.ts",
+    "build": "vite build && tsc -p tsconfig.server.json",
+    "start": "node dist/server/server/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "three": "^0.187.0",
+    "ws": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/three": "^0.187.0",
+    "@types/ws": "^8.18.2",
+    "@vitest/coverage-v8": "^5.1.0",
+    "concurrently": "^10.0.7",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
