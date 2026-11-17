@@ -12,6 +12,7 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string): T =>
   document.getElementById(id) as T;
 
 let balance: Balance | null = null;
+let balanceTask: Promise<Balance> | null = null;
 let game: Game | null = null;
 let net: NetClient | null = null;
 let netGen = 0;
@@ -42,9 +43,37 @@ async function boot(): Promise<void> {
   readRoomFromUrl();
 
   try {
-    balance = await loadBalance();
+    balance = await balanceReady();
   } catch {
     setConnection("Не удалось загрузить баланс. Обновите страницу.", "error");
+  }
+}
+
+/** Один и тот же запрос баланса переиспользуется всеми кнопками меню. */
+function balanceReady(): Promise<Balance> {
+  if (balance) return Promise.resolve(balance);
+  balanceTask ??= loadBalance().then((data) => {
+    balance = data;
+    return data;
+  });
+  return balanceTask;
+}
+
+/**
+ * Кнопки меню можно нажать раньше, чем догрузится баланс (бесплатный инстанс
+ * просыпается не мгновенно). Тогда честно ждём загрузку вместо ошибки.
+ */
+async function requireBalance(): Promise<Balance | null> {
+  setConnection("Загружаем баланс…", "warn");
+  try {
+    return await balanceReady();
+  } catch {
+    setConnection("Не удалось загрузить баланс. Обновите страницу.", "error");
+    return null;
+  } finally {
+    if ($("connection-text").textContent.startsWith("Загружаем баланс")) {
+      $("connection").classList.add("hidden");
+    }
   }
 }
 
@@ -68,6 +97,17 @@ async function loadBalance(): Promise<Balance> {
     }
   }
   throw lastError ?? new Error("баланс недоступен");
+}
+
+/** Выполняет действие, как только баланс доступен (или сразу, если уже загружен). */
+function withBalance(action: () => void): void {
+  if (balance) {
+    action();
+    return;
+  }
+  void requireBalance().then((data) => {
+    if (data) action();
+  });
 }
 
 function wireMenu(): void {
@@ -96,26 +136,22 @@ function wireMenu(): void {
   }
 
   $("btn-play-offline").addEventListener("click", () => {
-    if (!balance) {
-      setConnection("Баланс ещё не загружен", "error");
-      return;
-    }
-    const role: Role = selectedRole === "random"
-      ? Math.random() < 0.5 ? "defender" : "attacker"
-      : selectedRole;
-    startOffline(role, playerName(offlineName));
+    withBalance(() => {
+      const role: Role = selectedRole === "random"
+        ? Math.random() < 0.5 ? "defender" : "attacker"
+        : selectedRole;
+      startOffline(role, playerName(offlineName));
+    });
   });
 
   $("btn-create").addEventListener("click", () => {
-    if (!balance) {
-      setConnection("Баланс ещё не загружен", "error");
-      return;
-    }
-    const name = playerName(onlineName);
-    online.code = "";
-    online.token = null;
-    selectTab("online");
-    connect({ t: "join", name, role: selectedRole });
+    withBalance(() => {
+      const name = playerName(onlineName);
+      online.code = "";
+      online.token = null;
+      selectTab("online");
+      connect({ t: "join", name, role: selectedRole });
+    });
   });
 
   const joinCode = $<HTMLInputElement>("join-code");
@@ -125,7 +161,9 @@ function wireMenu(): void {
       setConnection("Введите 4-символьный код комнаты", "error");
       return;
     }
-    connect({ t: "join", room: code, name: playerName(onlineName) });
+    withBalance(() => {
+      connect({ t: "join", room: code, name: playerName(onlineName) });
+    });
   };
   $("btn-join").addEventListener("click", joinRoom);
   joinCode.addEventListener("keydown", (event) => {
